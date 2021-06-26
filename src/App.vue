@@ -38,7 +38,38 @@
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <v-row no-gutters>
+        <v-col
+          cols="12"
+          sm="2"
+        >
+          <v-card
+            class="pa-2"
+            outlined
+            tile
+          >
+            One of three columns
+          </v-card>
+        </v-col>
+        <v-col
+          cols="12"
+          sm="8"
+        >
+          <router-view />
+        </v-col>
+        <v-col
+          cols="12"
+          sm="2"
+        >
+          <v-card
+            class="pa-2"
+            outlined
+            tile
+          >
+            One of three columns
+          </v-card>
+        </v-col>
+      </v-row>
     </v-main>
   </v-app>
 </template>

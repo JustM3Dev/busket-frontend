@@ -17,5 +17,8 @@ module.exports = {
     'quotes': [ 'error', 'single' ],
     'space-before-function-paren': ['error', 'always'],
     'max-len': ['error', 200],
+    'class-methods-use-this': 'off',
+    'lines-between-class-members': 'off',
+    'no-plusplus': 'off'
   },
 };
