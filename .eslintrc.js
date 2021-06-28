@@ -14,11 +14,11 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'quotes': [ 'error', 'single' ],
+    quotes: ['error', 'single'],
     'space-before-function-paren': ['error', 'always'],
     'max-len': ['error', 200],
     'class-methods-use-this': 'off',
     'lines-between-class-members': 'off',
-    'no-plusplus': 'off'
+    'no-plusplus': 'off',
   },
 };
