@@ -1,5 +1,5 @@
 <template>
-  <v-btn outlined color="red" @click="logout">Logout</v-btn>
+  <v-btn outlined color="red" @click="logout" @finished="reload();">Logout</v-btn>
 </template>
 
 <script lang="ts">
@@ -11,6 +11,10 @@ export default class Logout extends Vue {
   async logout (): Promise<void> {
     await feathersClient.authentication.logout();
     await this.$router.push({ name: 'home' });
+    window.location.reload();
+  }
+
+  reload (): void {
     window.location.reload();
   }
 }

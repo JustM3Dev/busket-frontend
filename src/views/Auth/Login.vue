@@ -7,7 +7,7 @@
         .
       </v-card-subtitle>
       <v-card-text>
-        <Login @finished="window.location.reload();"></Login>
+        <Login @finished="reload();"></Login>
       </v-card-text>
     </v-card>
   </div>
@@ -22,5 +22,9 @@ import Login from '@/components/Auth/Login.vue';
     Login,
   },
 })
-export default class LoginPage extends Vue {}
+export default class LoginPage extends Vue {
+  reload (): void {
+    window.location.reload();
+  }
+}
 </script>
