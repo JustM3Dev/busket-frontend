@@ -7,7 +7,7 @@
         .
       </v-card-subtitle>
       <v-card-text>
-        <Login @finished="reload();"></Login>
+        <Login @finished="finished();"></Login>
       </v-card-text>
     </v-card>
   </div>
@@ -23,7 +23,13 @@ import Login from '@/components/Auth/Login.vue';
   },
 })
 export default class LoginPage extends Vue {
-  reload (): void {
+  finished (): void {
+    if (!this.$route.query.redirect) {
+      this.$router.push({ name: 'home' });
+      window.location.reload();
+      return;
+    }
+    this.$router.push(decodeURI(this.$route.query.redirect[0] || ''));
     window.location.reload();
   }
 }

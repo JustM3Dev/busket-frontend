@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import FastAuth from '@/components/FastAuth.vue';
+import FastAuth from '@/components/Auth/FastAuth.vue';
 
 @Component({
   components: { FastAuth },

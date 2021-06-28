@@ -33,27 +33,13 @@
            :loading="btnLoading" class="mt-6">Login
     </v-btn>
 
-    <v-snackbar
-      v-model="snackbar"
-    >
-      {{ snackbarText }}
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          color="primary"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import feathersClient from '@/feathers-client';
+import EventBus from '@/eventbus';
 
 @Component
 export default class Login extends Vue {
@@ -78,8 +64,6 @@ export default class Login extends Vue {
   private username = '';
   private btnDisabled = true;
   private btnLoading = false;
-  private snackbar = false;
-  private snackbarText = '';
 
   @Watch('email')
   @Watch('password')
@@ -93,7 +77,7 @@ export default class Login extends Vue {
 
   passwordBlur (): void {
     this.tries++;
-    if (this.tries >= 3) (this.$refs.passwordHint as HTMLSpanElement).innerHTML = 'Forgot your password? Click <a href="/auth/reset">here</a>.';
+    if (this.tries >= 3) (this.$refs.passwordHint as HTMLSpanElement).innerHTML = 'Forgot your password? Click <router-link to="/auth/reset">here</router-link>.';
   }
 
   async submit (): Promise<void> {
@@ -107,15 +91,13 @@ export default class Login extends Vue {
     }).then(() => {
       this.btnLoading = false;
       this.$emit('finished');
-    }).catch((err: any) => {
+    }).catch((err) => {
       console.warn('[ERROR] Error while trying to authenticate/login:', err);
       if (err.code === 401) {
-        this.snackbarText = 'Authentication failed. Wrong email or password provided!';
-        this.snackbar = true;
+        EventBus.$emit('snackbar', { message: 'Authentication failed. Wrong email or password provided!' });
         return;
       }
-      this.snackbarText = 'Something went wrong... Please try again later';
-      this.snackbar = true;
+      EventBus.$emit('snackbar', { message: 'Something went wrong... Please try again later' });
     }).finally(() => {
       // this.email = '';
       // this.password = '';

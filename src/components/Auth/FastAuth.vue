@@ -57,7 +57,7 @@ import Signup from '@/components/Auth/Signup.vue';
 export default class FastAuth extends Vue {
   @Prop({ required: true }) private show: boolean | undefined;
   @Prop({ required: false, default: 'pick' }) private start: string | undefined;
-  private screenHistory: string[] = [];
+  protected screenHistory: string[] = [];
   private currentScreen = 'pick';
   private loading = false;
   private loggedIn = false;

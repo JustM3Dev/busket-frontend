@@ -37,10 +37,10 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Auth/ResetLogin.vue'),
   },
   {
-    path: '/mylist',
-    name: 'mylist',
+    path: '/me/overview',
+    name: 'list overview',
     meta: { requiresAuth: true },
-    component: () => import(/* webpackChunkName: "about" */ '../views/Auth/ResetLogin.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/ListOverview.vue'),
   },
 ];
 
@@ -55,9 +55,9 @@ router.beforeEach(async (to, from, next) => {
 
   // Authentication
   if (!feathersClient.authentication.authenticated) {
-    await feathersClient.authenticate().then((user: any) => {
+    await feathersClient.authenticate().then((user) => {
       feathersClient.authentication.app.set('auth', user);
-    }).catch((err: any) => {
+    }).catch((err) => {
       console.log(`[Auth] Not authenticated. This page requires auth: ${to.meta?.requiresAuth ? 'yes' : 'no'}`);
       if (!err.data?.reason && to.meta?.requiresAuth) router.replace({ name: 'login', query: { redirect: to.path } });
     });

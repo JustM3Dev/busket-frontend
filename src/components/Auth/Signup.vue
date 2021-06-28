@@ -31,28 +31,13 @@
     <v-btn color="primary" block outlined @click="submit" ref="loginBtn" :disabled="btnDisabled"
            :loading="btnLoading" class="mt-4">Login
     </v-btn>
-
-    <v-snackbar
-      v-model="snackbar"
-    >
-      {{ snackbarText }}
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          color="primary"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import feathersClient from '@/feathers-client';
+import EventBus from '@/eventbus';
 
 @Component
 export default class Signup extends Vue {
@@ -76,8 +61,6 @@ export default class Signup extends Vue {
   private username = '';
   private btnDisabled = true;
   private btnLoading = false;
-  private snackbar = false;
-  private snackbarText = '';
 
   @Watch('email')
   @Watch('password')
@@ -97,12 +80,10 @@ export default class Signup extends Vue {
       email: this.email,
       password: this.password,
     }).then(() => {
-      this.snackbarText = `Created account ${this.email} successfully.`;
-      this.snackbar = true;
+      EventBus.$emit('snackbar', { message: `Created account ${this.email} successfully.` });
       this.$emit('finished');
     }).catch(() => {
-      this.snackbarText = `An account with the email '${this.email}' already exists.`;
-      this.snackbar = true;
+      EventBus.$emit('snackbar', { message: `An account with the email '${this.email}' already exists.` });
     });
   }
 }
