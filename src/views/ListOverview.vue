@@ -1,40 +1,46 @@
 <template>
   <div>
-    <v-card v-for="(item, i) in lists" :key="i" class="mt-3 mx-16 pa-2" outlined ripple @click="$router.push({ name: 'list detail', params: { listId: item.id } })">
-      <v-row>
-        <v-col
-          cols="auto"
-          class="mr-auto"
-          align-self="center"
-        >
-          {{ item.name }}
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                color="primary"
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-account-multiple
-              </v-icon>
-            </template>
-            <span>{{ item.owner }}</span>
-          </v-tooltip>
-        </v-col>
-        <v-col cols="auto">
-          <v-btn color="accent" icon @click.stop="copyToClipboard(`https://busket.bux.at/me/list/${item.id}`)">
-            <v-icon>mdi-share-variant</v-icon>
-          </v-btn>
-          <v-btn color="accent" icon @click.stop="$router.push({ name: 'list detail', params: { listId: item.id } })">
-            <v-icon>mdi-open-in-new</v-icon>
-          </v-btn>
-          <v-btn color="primary" icon
-                 @click.stop="item.starred = !item.starred; starList(item.id, item.starred)">
-            <v-icon color="accent">mdi-{{ item.starred ? 'star' : 'star-outline' }}</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-card>
+    <div v-if="lists.length > 0">
+      <v-card v-for="(item, i) in lists" :key="i" class="mt-3 mx-16 pa-2" outlined ripple
+              @click="$router.push({ name: 'list detail', params: { listId: item.id } })">
+        <v-row>
+          <v-col
+            cols="auto"
+            class="mr-auto"
+            align-self="center"
+          >
+            {{ item.name }}
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  color="primary"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  mdi-account-multiple
+                </v-icon>
+              </template>
+              <span>{{ item.owner }}</span>
+            </v-tooltip>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn color="accent" icon @click.stop="copyToClipboard(`https://busket.bux.at/me/list/${item.id}`)">
+              <v-icon>mdi-share-variant</v-icon>
+            </v-btn>
+            <v-btn color="accent" icon @click.stop="$router.push({ name: 'list detail', params: { listId: item.id } })">
+              <v-icon>mdi-open-in-new</v-icon>
+            </v-btn>
+            <v-btn color="primary" icon
+                   @click.stop="item.starred = !item.starred; starList(item.id, item.starred)">
+              <v-icon color="accent">mdi-{{ item.starred ? 'star' : 'star-outline' }}</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
+    </div>
+    <div v-else class="grey--text text-center my-3">
+      No data to display.
+    </div>
 
     <v-btn
       class="mx-2"
@@ -83,7 +89,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <input ref="copy" value="" style="display: none" />
+    <input ref="copy" value="" style="display: none"/>
   </div>
 </template>
 
