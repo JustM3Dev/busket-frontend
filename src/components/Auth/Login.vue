@@ -1,13 +1,5 @@
 <template>
   <div>
-<!--    <v-text-field
-      label="Username"
-      :rules="usernameRules"
-      hide-details="auto"
-      class="pb-3"
-      type="text"
-      v-model="username"
-    ></v-text-field>-->
     <v-text-field
       label="Email"
       :rules="emailRules"

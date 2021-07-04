@@ -29,7 +29,9 @@
           <div v-else-if="currentScreen === 'login'">
             <Login @finished="reload();"></Login>
           </div>
-          <div v-else-if="currentScreen === 'signup'"><Signup @finished="currentScreen = 'pick'"></Signup></div>
+          <div v-else-if="currentScreen === 'signup'">
+            <Signup @finished="currentScreen = 'pick'"></Signup>
+          </div>
           <div v-else>Something went wrong...</div>
         </v-card-text>
       </v-card>
@@ -88,7 +90,9 @@ export default class FastAuth extends Vue {
     });
   }
 
-  reload (): void { window.location.reload(); }
+  reload (): void {
+    window.location.reload();
+  }
 }
 </script>
 
