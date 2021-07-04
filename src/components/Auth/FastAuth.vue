@@ -6,7 +6,7 @@
       v-model="show"
       persistent
     >
-      <v-card color="white" :loading="loading">
+      <v-card :loading="loading">
         <v-card-title>
           <v-btn text small icon color="primary"
                  @click="currentScreen = screenHistory[screenHistory.length === 0 || currentScreen === 'pick' ? $emit('close') : screenHistory.length - 2]">

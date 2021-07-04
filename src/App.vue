@@ -62,6 +62,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Navbar from '@/components/Navbar.vue';
 import EventBus from '@/eventbus';
+import feathersClient from '@/feathers-client';
 
 interface Snack {
   message: string,
@@ -75,6 +76,7 @@ interface Snack {
   },
 })
 export default class App extends Vue {
+  private feathersClient = feathersClient;
   private snack: Snack = { message: '' };
 
   mounted (): void {

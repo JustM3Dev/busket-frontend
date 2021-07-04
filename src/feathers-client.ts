@@ -20,4 +20,25 @@ export async function isLoggedIn (): Promise<boolean> {
   });
 }
 
+export interface IList {
+  order: number;
+  name: string;
+  starred: boolean;
+  items: Record<string, string>;
+  // eslint-disable-next-line camelcase
+  share_id: string;
+  // eslint-disable-next-line camelcase
+  list_id: string;
+
+  // eslint-disable-next-line camelcase
+  created_at: Date;
+  // eslint-disable-next-line camelcase
+  updated_at: Date;
+}
+
+export interface Item {
+  name: string,
+  id: string
+}
+
 export default feathersClient;

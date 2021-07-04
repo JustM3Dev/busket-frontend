@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-text-field
+<!--    <v-text-field
       label="Username"
       :rules="usernameRules"
       hide-details="auto"
       class="pb-3"
       type="text"
       v-model="username"
-    ></v-text-field>
+    ></v-text-field>-->
     <v-text-field
       label="Email"
       :rules="emailRules"
@@ -85,7 +85,6 @@ export default class Login extends Vue {
 
     feathersClient.authentication.authenticate({
       strategy: 'local',
-      username: this.username,
       email: this.email,
       password: this.password,
     }).then(() => {

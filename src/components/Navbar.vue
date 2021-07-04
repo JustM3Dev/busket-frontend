@@ -26,6 +26,9 @@
 
     <v-spacer></v-spacer>
 
+    <v-btn text outlined class="mr-3" @click="changeTheme()">
+      <v-icon>{{ $vuetify.theme.dark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
+    </v-btn>
     <v-btn
       @click="fastAuthOpen = true"
       text
@@ -48,5 +51,21 @@ import FastAuth from '@/components/Auth/FastAuth.vue';
 })
 export default class Navbar extends Vue {
   private fastAuthOpen = false;
+
+  mounted (): void {
+    const dark = window.localStorage.getItem('dark')?.includes('true');
+    if (!dark) {
+      window.localStorage.setItem('dark', 'false');
+      return;
+    }
+
+    this.$vuetify.theme.dark = dark;
+  }
+
+  changeTheme (): void {
+    this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+
+    window.localStorage.setItem('dark', this.$vuetify.theme.dark.toString());
+  }
 }
 </script>
