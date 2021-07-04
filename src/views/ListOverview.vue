@@ -8,10 +8,22 @@
           align-self="center"
         >
           {{ item.name }}
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="primary"
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-account-multiple
+              </v-icon>
+            </template>
+            <span>{{ item.owner }}</span>
+          </v-tooltip>
         </v-col>
         <v-col cols="auto">
-          <v-btn color="accent" icon @click.stop="$router.push({ name: 'list detail', params: { listId: item.shareId } })">
-            <v-icon>mdi-share</v-icon>
+          <v-btn color="accent" icon @click.stop="copyToClipboard(`https://busket.bux.at/me/list/${item.id}`)">
+            <v-icon>mdi-share-variant</v-icon>
           </v-btn>
           <v-btn color="accent" icon @click.stop="$router.push({ name: 'list detail', params: { listId: item.id } })">
             <v-icon>mdi-open-in-new</v-icon>
@@ -71,6 +83,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <input ref="copy" value="" style="display: none" />
   </div>
 </template>
 
@@ -80,10 +93,10 @@ import EventBus from '@/eventbus';
 import feathersClient, { IList } from '@/feathers-client';
 
 interface LList {
+  owner: string;
   name: string;
   starred: boolean;
   id: string;
-  shareId: string;
 }
 
 @Component
@@ -94,24 +107,46 @@ export default class ListOverview extends Vue {
     name: '',
     starred: false,
   };
+  private auth = feathersClient.get('auth');
 
   async mounted (): Promise<void> {
-    const lists: IList[] = await feathersClient.service('lists').find();
-    console.log(lists);
+    await this.loadLists();
+  }
 
-    lists.forEach((list) => {
+  copyToClipboard (content: string): void {
+    const inp = (this.$refs.copy as HTMLInputElement);
+    inp.value = content;
+    inp.select();
+    inp.setSelectionRange(0, 999);
+    document.execCommand('copy');
+    EventBus.$emit('snack', { message: 'Copied link to clipboard!' });
+  }
+
+  async loadLists (): Promise<void> {
+    const lists: IList[] = await feathersClient.service('lists').find();
+    lists.forEach(async (list) => {
       this.lists.push({
+        owner: await this.getOwnerName(list.owner),
         name: list.name,
         starred: list.starred,
         id: list.list_id,
-        shareId: list.share_id,
       });
     });
   }
 
+  async getOwnerName (uuid: string): Promise<string> {
+    if (uuid === this.auth.user.uuid) return 'You';
+    console.log(await feathersClient.service('user').get(uuid));
+    console.log(uuid);
+    return feathersClient.service('user').get(uuid).username;
+  }
+
   async createList (): Promise<void> {
-    if (!this.newList.name || !this.newList.starred) return;
+    if (!this.newList.name) return;
+    console.log('dsasd', this.newList.starred);
     await feathersClient.service('lists').create({ name: this.newList.name, starred: this.newList.starred } as IList);
+
+    await this.loadLists();
   }
 
   async starList (id: string, star: boolean): Promise<void> {

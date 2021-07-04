@@ -21,7 +21,7 @@
       label="Password"
       hide-details="auto"
       :rules="passwordRules"
-      :append-icon="showPsw ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
+      :append-icon="!showPsw ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
       :type="showPsw ? 'text' : 'password'"
       @click:append="showPsw = !showPsw"
       v-model="password"
@@ -29,7 +29,7 @@
     <span ref="passwordHint" class="pt-1"></span>
 
     <v-btn color="primary" block outlined @click="submit" ref="loginBtn" :disabled="btnDisabled"
-           :loading="btnLoading" class="mt-4">Login
+           :loading="btnLoading" class="mt-4">Signup
     </v-btn>
   </div>
 </template>
@@ -38,6 +38,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import feathersClient from '@/feathers-client';
 import EventBus from '@/eventbus';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component
 export default class Signup extends Vue {
@@ -79,12 +80,26 @@ export default class Signup extends Vue {
       username: this.username,
       email: this.email,
       password: this.password,
-    }).then(() => {
+      uuid: uuidv4(),
+    }).then(async () => {
       EventBus.$emit('snackbar', { message: `Created account ${this.email} successfully.` });
+
+      await feathersClient.authenticate({
+        strategy: 'local',
+        email: this.email,
+        password: this.password,
+      });
+      this.email = '';
+      this.password = '';
+      window.location.reload();
       this.$emit('finished');
-    }).catch(() => {
+    }).catch((err: any) => {
+      console.warn(err);
       EventBus.$emit('snackbar', { message: `An account with the email '${this.email}' already exists.` });
-    });
+    })
+      .finally(() => {
+        this.btnLoading = false;
+      });
   }
 }
 </script>

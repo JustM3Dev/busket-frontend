@@ -21,12 +21,10 @@ export async function isLoggedIn (): Promise<boolean> {
 }
 
 export interface IList {
-  order: number;
+  owner: string,
   name: string;
   starred: boolean;
   items: Record<string, string>;
-  // eslint-disable-next-line camelcase
-  share_id: string;
   // eslint-disable-next-line camelcase
   list_id: string;
 
