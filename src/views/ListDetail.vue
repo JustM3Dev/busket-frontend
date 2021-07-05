@@ -22,7 +22,7 @@
     </v-alert>
 
     <v-text-field outlined label="Add" persistent-placeholder placeholder="Test" dense class="mt-3 mx-1"
-                  append-icon="mdi-plus" @click:append="createItem" v-model="newItem.name"></v-text-field>
+                  append-icon="mdi-plus" @click:append="createItem" v-model="newItem.name" @keypress.enter="createItem"></v-text-field>
 
     <div v-if="items && items.length > 0" class="mt-3">
       <draggable v-model="items" ghost-class="ghost" @end="updateItems">
@@ -35,9 +35,9 @@
                 align-self="center"
               >
                 <div class="d-flex justify-start">
-                  <SneakInput v-model="item.name" style="width: 60%"/>
+                  <SneakInput v-model="item.name" style="width: 60%" @keypress.enter="item.cachedName = item.name; updateItems();" />
                   <div style="width: 60px">
-                    <v-btn outlined small color="primary" @click="item.name = item.cachedName; updateItems"
+                    <v-btn outlined small color="primary" @click="item.cachedName = item.name; updateItems();"
                            :hidden="item.name === item.cachedName">
                       Save
                     </v-btn>

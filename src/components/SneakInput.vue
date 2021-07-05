@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="text" v-model="text" @input="change()">
+    <input type="text" v-model="text" @input="change()" @keypress="keypress">
   </div>
 </template>
 
@@ -14,6 +14,10 @@ export default class SneakInput extends Vue {
 
   mounted (): void {
     this.text = this.value || '';
+  }
+
+  keypress (e: Event): void {
+    this.$emit('keypress', e);
   }
 
   change (): void {
