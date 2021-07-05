@@ -130,9 +130,9 @@ export default class ListOverview extends Vue {
 
   async loadLists (): Promise<void> {
     const lists: IList[] = await feathersClient.service('lists').find();
-    lists.forEach(async (list) => {
+    await lists.map(async (list) => {
       this.lists.push({
-        owner: await this.getOwnerName(list.owner),
+        owner: `Owned by: '${await this.getOwnerName(list.owner)}'`,
         name: list.name,
         starred: list.starred,
         id: list.list_id,
@@ -142,9 +142,7 @@ export default class ListOverview extends Vue {
 
   async getOwnerName (uuid: string): Promise<string> {
     if (uuid === this.auth.user.uuid) return 'You';
-    console.log(await feathersClient.service('user').get(uuid));
-    console.log(uuid);
-    return feathersClient.service('user').get(uuid).username;
+    return feathersClient.service('user').get(uuid);
   }
 
   async createList (): Promise<void> {

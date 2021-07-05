@@ -20,8 +20,12 @@
       </v-row>
       <v-spacer></v-spacer>
     </v-alert>
+
+    <v-text-field outlined label="Add" persistent-placeholder placeholder="Test" dense class="mt-3 mx-1"
+                  append-icon="mdi-plus" @click:append="createItem" v-model="newItem.name"></v-text-field>
+
     <div v-if="items && items.length > 0" class="mt-3">
-      <draggable v-model="items" ghost-class="ghost" @end="moveItem">
+      <draggable v-model="items" ghost-class="ghost" @end="updateItems">
         <transition-group>
           <v-card v-for="(item, i) in items" :key="i" flat outlined class="px-2 mb-2">
             <v-row>
@@ -30,10 +34,18 @@
                 class="mr-auto"
                 align-self="center"
               >
-                {{ item.name }}
+                <div class="d-flex justify-start">
+                  <SneakInput v-model="item.name" style="width: 60%"/>
+                  <div style="width: 60px">
+                    <v-btn outlined small color="primary" @click="item.name = item.cachedName; updateItems"
+                           :hidden="item.name === item.cachedName">
+                      Save
+                    </v-btn>
+                  </div>
+                </div>
               </v-col>
               <v-col cols="auto">
-                <v-btn color="red lighten-1" icon @click="removeItem(i)">
+                <v-btn color="red lighten-1" icon @click="trashClick($event, i)">
                   <v-icon>mdi-trash-can-outline</v-icon>
                 </v-btn>
               </v-col>
@@ -99,6 +111,37 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="removeDialog.show"
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Are you sure?
+        </v-card-title>
+        <v-card-text>Do you really want to permanently delete this item of your list? You cannot undo this! Tip: Hold
+          shift while clicking the trash can to skip the modal.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="removeDialog.show = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="removeDialog.show = false; removeItem(removeDialog.index)"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -107,9 +150,11 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import feathersClient, { IList, Item as ListItem } from '@/feathers-client';
 import draggable from 'vuedraggable';
 import { v4 as uuidv4 } from 'uuid';
+import SneakInput from '@/components/SneakInput.vue';
 
 @Component({
   components: {
+    SneakInput,
     draggable,
   },
 })
@@ -130,6 +175,10 @@ export default class ListDetail extends Vue {
     name: '',
   };
   private notInLibrary = false;
+  private removeDialog = {
+    show: false,
+    index: -1,
+  };
 
   async mounted (): Promise<void> {
     await this.loadItems();
@@ -146,15 +195,33 @@ export default class ListDetail extends Vue {
     return inLib;
   }
 
+  trashClick (e: any, i: number): void {
+    console.log(e.shiftKey);
+    if (e.shiftKey) {
+      this.removeItem(i);
+      return;
+    }
+    this.removeDialog.show = true;
+    this.removeDialog.index = i;
+  }
+
   async createRelation (): Promise<void> {
     feathersClient.service('relations').create({ list_id: this.listId });
   }
 
   async loadItems (): Promise<void> {
+    this.items = [];
+
     this.list = await feathersClient.service('lists').get(this.listId);
 
     if (!this.list.items) (this.list.items as unknown as Record<string, unknown>) = { data: [] };
-    this.items = this.list.items.data as unknown as ListItem[];
+    (this.list.items.data as unknown as ListItem[]).forEach((item) => {
+      this.items.push({
+        cachedName: item.name,
+        name: item.name,
+        id: item.id,
+      });
+    });
   }
 
   async createItem (): Promise<void> {
@@ -165,6 +232,7 @@ export default class ListDetail extends Vue {
 
     if (!this.items) this.items = [];
     this.items.push({
+      cachedName: this.newItem.name.trim(),
       name: this.newItem.name.trim(),
       id: uuidv4(),
     });
@@ -172,8 +240,14 @@ export default class ListDetail extends Vue {
     this.newItem.name = '';
   }
 
-  async moveItem (e: Record<string, unknown>): Promise<void> {
-    console.log(this.items);
+  async updateItems (): Promise<void> {
+    const items = [];
+    this.items.forEach((item) => {
+      items.push({
+        name: item.name,
+        id: item.id,
+      });
+    });
     await feathersClient.service('lists').update(this.listId, { items: { data: this.items } });
   }
 

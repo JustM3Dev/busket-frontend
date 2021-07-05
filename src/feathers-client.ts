@@ -35,6 +35,7 @@ export interface IList {
 }
 
 export interface Item {
+  cachedName: string,
   name: string,
   id: string
 }
