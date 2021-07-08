@@ -16,7 +16,7 @@
   "navbar": {
     "Home": "Home",
     "My lists": "Meine Listen",
-    "Account": "Account",
+    "Account": "Mein Konto",
     "Report a bug": "Fehler melden"
   },
   "auth": {
@@ -37,11 +37,11 @@
     "Only Characters from A-z, 0-9, spaces and dots are allowed": "Nur Zeichen von A-z, 0-9, Abstände und Punkte sind erlaubt.",
     "Wrong email or password": "Falsche Email oder Passwort!",
     "Something went wrong Please try again later": "Etwas ist schiefgelaufen... Versuche es noch einmal!",
-    "Created account email successfully": "Account {email} wurde ergfolgreich erstellt.",
-    "An account with the email email already exists": "Ein Account mit der email {email} existiert bereits!",
-    "Login using your Busket account You can create one": "Logge dich mit deinem Busket Account ein. Falls du keinen hast, erstelle einen",
+    "Created account email successfully": "Konto {email} wurde erfolgreich erstellt.",
+    "An account with the email email already exists": "Ein Konto mit der email {email} existiert bereits!",
+    "Login using your Busket account You can create one": "Logge dich mit deinem Busket Konto ein. Falls du keinen hast, erstelle einen",
     "here": "hier",
-    "Create a new Busket account Already have one? Click": "Erstelle einen neuen Busket Account. Du hast schon einen? Klicke"
+    "Create a new Busket account Already have one? Click": "Erstelle einen neuen Busket Konto. Du hast schon einen? Klicke"
   },
   "special": {
     "The requested page could not be found": "Seltsam... - Die Angefragte Seite konnte nicht gefunden werden",

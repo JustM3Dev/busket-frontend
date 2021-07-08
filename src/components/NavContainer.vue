@@ -56,7 +56,7 @@
           v-model="group"
           active-class="primary--text"
         >
-          <v-list-item>
+          <v-list-item disabled dense>
             <v-list-item-icon>
               <v-icon>mdi-cart-outline</v-icon>
             </v-list-item-icon>
