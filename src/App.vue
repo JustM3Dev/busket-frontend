@@ -49,6 +49,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Navbar from '@/components/Navbar.vue';
 import EventBus from '@/eventbus';
+import { isIE } from 'mobile-device-detect';
 import feathersClient from '@/feathers-client';
 import config from '../config';
 
@@ -73,7 +74,18 @@ export default class App extends Vue {
 
     // Beta only
     if (config.isBeta) {
-      this.showSnack({ message: 'You are currently testing a beta version of Busket', duration: 1200 });
+      this.showSnack({
+        message: 'You are currently testing a beta version of Busket - Please report any bugs!',
+        duration: 1200,
+      });
+    }
+
+    // IE only
+    if (isIE) {
+      this.showSnack({
+        message: 'This browser is not supported nor recommended!',
+        duration: 1200,
+      });
     }
   }
 

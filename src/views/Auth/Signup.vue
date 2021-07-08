@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { isMobileOnly } from 'mobile-device-detect';
 import Signup from '@/components/Auth/Signup.vue';
 
 @Component({
@@ -26,11 +27,16 @@ export default class SignupPage extends Vue {
   private width = '40%';
 
   mounted (): void {
-    window.addEventListener('resize', this.widthListener);
+    window.addEventListener('resize', this.resizeEvent);
+    this.resizeEvent();
   }
 
-  widthListener (): void {
-    this.width = window.screen.width > 1024 ? '40%' : '90%';
+  resizeEvent (): void {
+    if (window.innerWidth > 1024) {
+      this.width = isMobileOnly ? '90%' : '40%';
+      return;
+    }
+    this.width = '90%';
   }
 }
 </script>
