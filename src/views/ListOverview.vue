@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="lists.length > 0">
-      <v-card v-for="(item, i) in lists" :key="i" class="mt-3 mx-16 pa-2" outlined ripple
+      <v-card v-for="(item, i) in lists" :key="i" class="mt-3 pa-2" :class="mx" outlined ripple
               @click="$router.push({ name: 'list detail', params: { listId: item.id } })">
         <v-row>
           <v-col
@@ -122,6 +122,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import EventBus from '@/eventbus';
 import feathersClient, { IList } from '@/feathers-client';
+import { isMobileOnly } from 'mobile-device-detect';
 
 interface LList {
   owner: string;
@@ -143,9 +144,20 @@ export default class ListOverview extends Vue {
     show: false,
     id: '',
   };
+  private mx = 'mx-16';
 
   async mounted (): Promise<void> {
+    window.addEventListener('resize', this.resizeEvent);
+    this.resizeEvent();
     await this.loadLists();
+  }
+
+  resizeEvent (): void {
+    if (window.innerWidth > 1024) {
+      this.mx = isMobileOnly ? 'mx-2' : 'mx-16';
+      return;
+    }
+    this.mx = 'mx-2';
   }
 
   async removeItem (id: string): Promise<void> {
