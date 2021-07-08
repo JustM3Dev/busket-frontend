@@ -7,13 +7,16 @@
     >
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-app-bar-title>
-        <v-btn @click="$route.name !== 'home' ? $router.push({ name: 'home' }) : ''" color="primary">Busket</v-btn>
+        <v-btn @click="$route.name !== 'home' ? $router.push({ name: 'home' }) : ''" color="primary">
+          <v-icon class="mr-2" small>mdi-cart-outline</v-icon>
+          Busket
+        </v-btn>
       </v-app-bar-title>
 
       <v-spacer></v-spacer>
       <v-slide-y-transition>
         <v-btn color="accent" depressed v-if="auth === true && $route.name !== 'list overview'"
-               @click="$router.push({ name: 'list overview' });">My lists
+               @click="$router.push({ name: 'list overview' });">{{ $t('navbar.My lists') }}
         </v-btn>
       </v-slide-y-transition>
       <v-spacer v-if="!showIcons"></v-spacer>
@@ -48,40 +51,50 @@
     >
       <v-list
         nav
-        dense
       >
         <v-list-item-group
           v-model="group"
-          active-class="text--primary"
+          active-class="primary--text"
         >
-          <v-list-item @click="$route.name !== 'home' ? $router.push({ name: 'home' }) : ''" color="primary">
+          <v-list-item>
             <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
+              <v-icon>mdi-cart-outline</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Home</v-list-item-title>
+            <v-list-item-title>Busket</v-list-item-title>
           </v-list-item>
 
-          <v-list-item color="primary"
-                       v-if="auth === true && $route.name !== 'list overview'"
-                       @click="$router.push({ name: 'list overview' });">
+          <v-divider class="my-2"></v-divider>
+
+          <v-list-item @click="$route.name !== 'home' ? $router.push({ name: 'home' }) : ''">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>My Lists</v-list-item-title>
+            <v-list-item-title>{{ $t('navbar.Home') }}</v-list-item-title>
           </v-list-item>
+
+          <v-list-item
+            v-if="auth === true && $route.name !== 'list overview'"
+            @click="$router.push({ name: 'list overview' });">
+            <v-list-item-icon>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('navbar.My lists') }}</v-list-item-title>
+          </v-list-item>
+
+          <v-divider class="my-2"></v-divider>
 
           <v-list-item @click="fastAuthOpen = true;">
             <v-list-item-icon>
               <v-icon>mdi-account</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Account</v-list-item-title>
+            <v-list-item-title>{{ $t('navbar.Account') }}</v-list-item-title>
           </v-list-item>
 
           <v-list-item target="_blank" href="https://github.com/JustM3Dev/busket-frontend/issues/new">
             <v-list-item-icon>
               <v-icon>mdi-bug</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Report a bug</v-list-item-title>
+            <v-list-item-title>{{ $t('navbar.Report a bug') }}</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>

@@ -12,10 +12,13 @@
     >
       <v-row>
         <v-col class="mr-auto" cols="auto" align-self="center">
-          Add list to library?
+          {{ $t('list.Add to lib') }}
         </v-col>
         <v-col cols="auto">
-          <v-btn color="primary" outlined x-small @click="createRelation(); notInLibrary = false;">Add it</v-btn>
+          <v-btn color="primary" outlined x-small @click="createRelation(); notInLibrary = false;">{{
+              $t('list.Add it')
+            }}
+          </v-btn>
         </v-col>
       </v-row>
       <v-spacer></v-spacer>
@@ -23,16 +26,19 @@
 
     <v-btn outlined block color="primary" @click="loadItems()" class="mt-3">
       <v-icon>mdi-reload</v-icon>
-      Reload
+      {{ $t('list.Refresh') }}
     </v-btn>
 
-    <v-text-field outlined label="Add" persistent-placeholder placeholder="Test" dense class="mt-3"
+    <v-text-field outlined label="Add" persistent-placeholder :placeholder="$t('list.Ham')" dense class="mt-3"
                   append-icon="mdi-plus" @click:append="createItem" v-model="newItem.name"
                   @keypress.enter="createItem"></v-text-field>
 
     <div v-if="items && items.length > 0">
       <div v-for="(filter, i) in [ true, false ]" :key="i">
-        <div class="grey--text" :class="filter ? '' : 'mt-6'" :draggable="false">{{ filter ? 'To do' : 'Done' }}</div>
+        <div class="grey--text" :class="filter ? '' : 'mt-6'" :draggable="false">{{
+            filter ? $t('list.To do') : $t('list.Done')
+          }}
+        </div>
         <v-divider class="mb-2"></v-divider>
         <draggable v-model="items" ghost-class="ghost" @end="updateItems">
           <transition-group>
@@ -50,7 +56,7 @@
                     <div style="width: 60px">
                       <v-btn outlined small color="primary" @click="item.cachedName = item.name; updateItems();"
                              :hidden="item.name === item.cachedName">
-                        Save
+                        {{ $t('list.Save') }}
                       </v-btn>
                     </div>
                   </div>
@@ -71,57 +77,8 @@
       </div>
     </div>
     <div v-else class="grey--text text-center my-3">
-      No data to display.
+      {{ $t('No data to display') }}
     </div>
-
-    <v-btn
-      class="mx-2"
-      fab
-      dark
-      color="primary"
-      fixed
-      right
-      bottom
-      @click="dialog = true"
-    >
-      <v-icon>
-        mdi-plus
-      </v-icon>
-    </v-btn>
-
-    <v-dialog
-      v-model="dialog"
-      max-width="360"
-      persistent
-    >
-      <v-card>
-        <v-card-title class="text-h5">
-          Create a new item.
-        </v-card-title>
-        <v-card-text>
-          <v-text-field label="Name" autofocus placeholder="Ham" v-model="newItem.name"
-                        @keypress.enter="dialog = false; createItem()"></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="grey"
-            text
-            @click="dialog = false"
-          >
-            Close
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="dialog = false; createItem()"
-            :disabled="newItem.name.trim().length <= 0"
-          >
-            Create
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
     <v-dialog
       v-model="removeDialog.show"
@@ -129,10 +86,10 @@
     >
       <v-card>
         <v-card-title class="text-h5">
-          Are you sure?
+          {{ $t('list.Are you sure') }}?
         </v-card-title>
-        <v-card-text>Do you really want to permanently delete this item of your list? You cannot undo this! Tip: Hold
-          shift while clicking the trash can to skip the modal.
+        <v-card-text>
+          {{ $t('list.Item delete notice') }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -141,14 +98,14 @@
             text
             @click="removeDialog.show = false"
           >
-            Cancel
+            {{ $t('Cancel') }}
           </v-btn>
           <v-btn
             color="green darken-1"
             text
             @click="removeDialog.show = false; removeItem(removeDialog.index)"
           >
-            Delete
+            {{ $t('Delete') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -181,7 +138,6 @@ export default class ListDetail extends Vue {
     updated_at: new Date(),
   };
   private items: ListItem[] = [];
-  private dialog = false;
   private newItem = {
     name: '',
     checked: false,

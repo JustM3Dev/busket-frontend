@@ -1,9 +1,10 @@
 <template>
   <div>
     <v-card class="mt-16 ma-auto" :width="width" outlined elevation="2">
-      <v-card-title>Signup</v-card-title>
-      <v-card-subtitle>Create a new Busket account. Already have one? Click
-        <router-link to="/auth/login">here</router-link>
+      <v-card-title>{{ $t('auth.Signup') }}</v-card-title>
+      <v-card-subtitle>
+        {{ $t('auth.Create a new Busket account Already have one? Click') }}
+        <router-link to="/auth/login">{{ $t('auth.here') }}</router-link>
         .
       </v-card-subtitle>
       <v-card-text>

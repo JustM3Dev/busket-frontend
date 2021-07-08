@@ -28,8 +28,9 @@
     ></v-text-field>
     <span ref="passwordHint" class="pt-1"></span>
 
-    <v-btn color="primary" block outlined @click="submit" ref="loginBtn" :disabled="btnDisabled"
-           :loading="btnLoading" class="mt-4">Signup
+    <v-btn color="primary" block outlined @click="submit" ref="loginBtn" :disabled="btnDisabled" :loading="btnLoading"
+           class="mt-4">
+      {{ $t('auth.Signup') }}
     </v-btn>
   </div>
 </template>
@@ -43,18 +44,18 @@ import { v4 as uuidv4 } from 'uuid';
 @Component
 export default class Signup extends Vue {
   private usernameRules = [
-    (value: string) => !!value || 'Required.',
-    (value: string) => (value && value.length >= 3) || 'Min 3 characters',
-    (value: string) => /[A-z 0-9.]+$/.exec(value) !== null || 'Only Characters from A-z, 0-9, spaces and dots are allowed',
+    (value: string) => !!value || `${this.$t('auth.Required')}.`,
+    (value: string) => (value && value.length >= 3) || this.$t('auth.Min x characters', { x: 3 }),
+    (value: string) => /^[A-z 0-9.]+$/.exec(value) !== null || this.$t('auth.Only Characters from A-z, 0-9, spaces and dots are allowed'),
   ];
   private passwordRules = [
-    (value: string) => !!value || 'Required.',
-    (value: string) => (value && value.length >= 3) || 'Min 3 characters',
+    (value: string) => !!value || `${this.$t('auth.Required')}.`,
+    (value: string) => (value && value.length >= 8) || this.$t('auth.Min x characters', { x: 8 }),
   ];
   private emailRules = [
-    (value: string) => !!value || 'Required.',
-    (value: string) => (value && value.length >= 3) || 'Min 3 characters',
-    (value: string) => (value && value.includes('@') && value.includes('.')) || 'Must be an email! (eg. example@example.com)',
+    (value: string) => !!value || `${this.$t('auth.Required')}.`,
+    (value: string) => (value && value.length >= 3) || this.$t('auth.Min x characters', { x: 3 }),
+    (value: string) => (value && value.includes('@') && value.includes('.')) || this.$t('auth.Must be an email'),
   ];
   private showPsw = false;
   private password = '';
@@ -63,14 +64,31 @@ export default class Signup extends Vue {
   private btnDisabled = true;
   private btnLoading = false;
 
+  mounted (): void {
+    this.validateInfo();
+  }
+
+  @Watch('username')
   @Watch('email')
   @Watch('password')
   validateInfo (): void {
-    if (this.password.length >= 3 && this.email.includes('@') && this.email.includes('.')) {
-      this.btnDisabled = false;
-      return;
-    }
-    this.btnDisabled = true;
+    this.usernameRules.some((r) => {
+      const c = r(this.username) !== true;
+      this.btnDisabled = c;
+      return c;
+    });
+
+    this.passwordRules.some((r) => {
+      const c = r(this.password) !== true;
+      this.btnDisabled = c;
+      return c;
+    });
+
+    this.emailRules.some((r) => {
+      const c = r(this.email) !== true;
+      this.btnDisabled = c;
+      return c;
+    });
   }
 
   async submit (): Promise<void> {
@@ -82,7 +100,7 @@ export default class Signup extends Vue {
       password: this.password,
       uuid: uuidv4(),
     }).then(async () => {
-      EventBus.$emit('snackbar', { message: `Created account ${this.email} successfully.` });
+      EventBus.$emit('snackbar', { message: this.$t('Created account email successfully', { email: this.email }) });
 
       await feathersClient.authenticate({
         strategy: 'local',
@@ -93,9 +111,9 @@ export default class Signup extends Vue {
       this.password = '';
       window.location.reload();
       this.$emit('finished');
-    }).catch((err: any) => {
+    }).catch((err: unknown) => {
       console.warn(err);
-      EventBus.$emit('snackbar', { message: `An account with the email '${this.email}' already exists.` });
+      EventBus.$emit('snackbar', { message: this.$t('An account with the email email already exists', { email: this.email }) });
     })
       .finally(() => {
         this.btnLoading = false;

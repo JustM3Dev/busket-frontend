@@ -33,7 +33,7 @@
       </v-card>
     </div>
     <div v-else class="grey--text text-center my-3">
-      No data to display.
+      {{ $t('No data to display') }}.
     </div>
 
     <v-dialog
@@ -42,9 +42,10 @@
     >
       <v-card>
         <v-card-title class="text-h5">
-          Are you sure?
+          {{ $t('list.Are you sure') }}?
         </v-card-title>
-        <v-card-text>Do you really want to permanently delete list? All items in it will be deleted too. You cannot undo this!
+        <v-card-text>
+          {{ $t('list.Do you want to delete the list') }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -53,14 +54,14 @@
             text
             @click="removeDialog.show = false"
           >
-            Cancel
+            {{ $t('Cancel') }}
           </v-btn>
           <v-btn
             color="green darken-1"
             text
             @click="removeDialog.show = false; removeItem(removeDialog.id)"
           >
-            Delete
+            {{ $t('Delete') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -88,12 +89,12 @@
     >
       <v-card>
         <v-card-title class="text-h5">
-          Create a new list.
+          {{ $t('list.Create new list') }}.
         </v-card-title>
         <v-card-text>
-          <v-text-field label="Name" autofocus placeholder="Cool shopping list" v-model="newList.name"
+          <v-text-field label="Name" autofocus :placeholder="$t('list.New list placeholder')" v-model="newList.name"
                         @keypress.enter="dialog = false; createList();"></v-text-field>
-          <v-checkbox label="Mark as starred?" v-model="newList.starred"></v-checkbox>
+          <v-checkbox :label="$t('list.Pin?')" v-model="newList.starred"></v-checkbox>
         </v-card-text>
         <v-card-actions>
           <v-btn
@@ -101,7 +102,7 @@
             text
             @click="dialog = false"
           >
-            Close
+            {{ $t('Close') }}
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
@@ -109,12 +110,11 @@
             text
             @click="dialog = false; createList()"
           >
-            Create
+            {{ $t('Create') }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <input ref="copy" value="" style="display: none"/>
   </div>
 </template>
 
@@ -166,12 +166,26 @@ export default class ListOverview extends Vue {
   }
 
   copyToClipboard (content: string): void {
-    const inp = (this.$refs.copy as HTMLInputElement);
-    inp.value = content;
-    inp.select();
-    inp.setSelectionRange(0, 999);
-    document.execCommand('copy');
-    EventBus.$emit('snack', { message: 'Copied link to clipboard!' });
+    if (window.clipboardData && window.clipboardData.setData) {
+      // For IE
+      // eslint-disable-next-line no-undef
+      clipboardData.setData('Text', text);
+    } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+      const t = document.createElement('textarea');
+      t.textContent = content;
+      // For Edge
+      t.style.position = 'fixed';
+      document.body.appendChild(t);
+      t.select();
+      try {
+        EventBus.$emit('snackbar', { message: this.$t('special.Copied link') });
+        document.execCommand('copy');
+      } catch (ex) {
+        console.warn('Copy to clipboard failed.', ex);
+      } finally {
+        document.body.removeChild(t);
+      }
+    }
   }
 
   async loadLists (): Promise<void> {
@@ -208,7 +222,7 @@ export default class ListOverview extends Vue {
 
     await feathersClient.service('lists').update(id, { pinned: pin });
 
-    this.snack(list.pinned ? `Added '${list.name}' to pinned lists.` : `Removed '${list.name}' from pinned lists.`);
+    this.snack(list.pinned ? this.$t('list.Added name to pinned', { name: list.name }) : this.$t('list.Removed name from pinned', { name: list.name }));
   }
 
   snack (message: string): void {

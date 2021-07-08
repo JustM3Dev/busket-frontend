@@ -36,7 +36,7 @@
             v-bind="attrs"
             @click="snack.show = false"
           >
-            Close
+            {{ $t('Close') }}
           </v-btn>
         </template>
       </v-snackbar>
@@ -71,10 +71,18 @@ export default class App extends Vue {
   mounted (): void {
     EventBus.$on('snackbar', this.showSnack);
 
+    // Set language
+    const locale = window.localStorage.getItem('preferredLocale');
+    if (locale) {
+      this.$i18n.locale = locale;
+    } else {
+      window.localStorage.setItem('preferredLocale', this.$i18n.locale);
+    }
+
     // Beta only
     if (config.isBeta) {
       this.showSnack({
-        message: 'You are currently testing a beta version of Busket - Please report any bugs!',
+        message: this.$t('special.Beta Notice'),
         duration: 1200,
       });
     }
