@@ -1,53 +1,54 @@
 <template>
   <v-app>
-    <Navbar></Navbar>
-    <v-main>
-      <v-row no-gutters>
-        <v-col
-          cols="12"
-          sm="2"
-        >
-        </v-col>
-        <v-col
-          cols="12"
-          sm="8"
-        >
-          <v-slide-x-transition>
-            <router-view/>
-          </v-slide-x-transition>
-        </v-col>
-        <v-col
-          cols="12"
-          sm="2"
-        ></v-col>
-      </v-row>
-    </v-main>
+    <NavContainer>
+      <v-main>
+        <v-row no-gutters>
+          <v-col
+            cols="12"
+            sm="2"
+          >
+          </v-col>
+          <v-col
+            cols="12"
+            sm="8"
+          >
+            <v-slide-x-transition>
+              <router-view/>
+            </v-slide-x-transition>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="2"
+          ></v-col>
+        </v-row>
+      </v-main>
 
-    <v-snackbar
-      ref="snack"
-      v-model="snack.show"
-      :timeout="snack.duration || 2500"
-      transition="slide-y-reverse-transition"
-    >
-      {{ snack.message }}
+      <v-snackbar
+        ref="snack"
+        v-model="snack.show"
+        :timeout="snack.duration || 2500"
+        transition="slide-y-reverse-transition"
+      >
+        {{ snack.message }}
 
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          color="blue"
-          text
-          v-bind="attrs"
-          @click="snack.show = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="blue"
+            text
+            v-bind="attrs"
+            @click="snack.show = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </NavContainer>
   </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Navbar from '@/components/Navbar.vue';
+import NavContainer from '@/components/NavContainer.vue';
 import EventBus from '@/eventbus';
 import { isIE } from 'mobile-device-detect';
 import feathersClient from '@/feathers-client';
@@ -61,7 +62,7 @@ interface Snack {
 
 @Component({
   components: {
-    Navbar,
+    NavContainer,
   },
 })
 export default class App extends Vue {
