@@ -12,9 +12,7 @@
             cols="12"
             sm="8"
           >
-            <v-slide-x-transition>
-              <router-view/>
-            </v-slide-x-transition>
+            <router-view/>
           </v-col>
           <v-col
             cols="12"
