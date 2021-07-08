@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="mt-16 ma-auto" width="40%" outlined elevation="2">
+    <v-card class="mt-16 ma-auto" :width="width" outlined elevation="2">
       <v-card-title>Signup</v-card-title>
       <v-card-subtitle>Create a new Busket account. Already have one? Click
         <router-link to="/auth/login">here</router-link>
@@ -22,5 +22,15 @@ import Signup from '@/components/Auth/Signup.vue';
     Signup,
   },
 })
-export default class SignupPage extends Vue {}
+export default class SignupPage extends Vue {
+  private width = '40%';
+
+  mounted (): void {
+    window.addEventListener('resize', this.widthListener);
+  }
+
+  widthListener (): void {
+    this.width = window.screen.width > 1024 ? '40%' : '90%';
+  }
+}
 </script>

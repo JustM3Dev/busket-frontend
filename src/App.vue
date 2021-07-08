@@ -50,6 +50,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import Navbar from '@/components/Navbar.vue';
 import EventBus from '@/eventbus';
 import feathersClient from '@/feathers-client';
+import config from '../config';
 
 interface Snack {
   message: string,
@@ -63,11 +64,17 @@ interface Snack {
   },
 })
 export default class App extends Vue {
-  private feathersClient = feathersClient;
+  // noinspection JSUnusedGlobalSymbols
+  feathersClient = feathersClient;
   private snack: Snack = { message: '' };
 
   mounted (): void {
     EventBus.$on('snackbar', this.showSnack);
+
+    // Beta only
+    if (config.isBeta) {
+      this.showSnack({ message: 'You are currently testing a beta version of Busket', duration: 1200 });
+    }
   }
 
   showSnack (snack: Snack): void {

@@ -6,33 +6,27 @@
         <v-row>
           <v-col
             cols="auto"
-            class="mr-auto"
+            class="mr-auto d-flex"
             align-self="center"
           >
             {{ item.name }}
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                  color="primary"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  mdi-account-multiple
-                </v-icon>
-              </template>
-              <span>{{ item.owner }}</span>
-            </v-tooltip>
+            <div class="d-flex" v-if="item.owner !== ''">
+              <v-icon color="primary" class="ml-1">
+                mdi-account-multiple
+              </v-icon>
+              <div class="grey--text">({{ item.owner }})</div>
+            </div>
           </v-col>
           <v-col cols="auto">
+            <v-btn color="accent" icon @click.stop="removeDialog.show = true; removeDialog.id = item.id">
+              <v-icon>mdi-trash-can-outline</v-icon>
+            </v-btn>
             <v-btn color="accent" icon @click.stop="copyToClipboard(`https://busket.bux.at/me/list/${item.id}`)">
               <v-icon>mdi-share-variant</v-icon>
             </v-btn>
-            <v-btn color="accent" icon @click.stop="$router.push({ name: 'list detail', params: { listId: item.id } })">
-              <v-icon>mdi-open-in-new</v-icon>
-            </v-btn>
             <v-btn color="primary" icon
-                   @click.stop="item.starred = !item.starred; starList(item.id, item.starred)">
-              <v-icon color="accent">mdi-{{ item.starred ? 'star' : 'star-outline' }}</v-icon>
+                   @click.stop="item.pinned = !item.pinned; pinList(item.id, item.pinned)">
+              <v-icon color="accent">mdi-{{ item.pinned ? 'pin' : 'pin-outline' }}</v-icon>
             </v-btn>
           </v-col>
         </v-row>
@@ -41,6 +35,36 @@
     <div v-else class="grey--text text-center my-3">
       No data to display.
     </div>
+
+    <v-dialog
+      v-model="removeDialog.show"
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Are you sure?
+        </v-card-title>
+        <v-card-text>Do you really want to permanently delete list? All items in it will be deleted too. You cannot undo this!
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="removeDialog.show = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="removeDialog.show = false; removeItem(removeDialog.id)"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-btn
       class="mx-2"
@@ -67,7 +91,8 @@
           Create a new list.
         </v-card-title>
         <v-card-text>
-          <v-text-field label="Name" autofocus placeholder="Cool shopping list" v-model="newList.name"></v-text-field>
+          <v-text-field label="Name" autofocus placeholder="Cool shopping list" v-model="newList.name"
+                        @keypress.enter="dialog = false; createList();"></v-text-field>
           <v-checkbox label="Mark as starred?" v-model="newList.starred"></v-checkbox>
         </v-card-text>
         <v-card-actions>
@@ -101,7 +126,7 @@ import feathersClient, { IList } from '@/feathers-client';
 interface LList {
   owner: string;
   name: string;
-  starred: boolean;
+  pinned: boolean;
   id: string;
 }
 
@@ -114,8 +139,17 @@ export default class ListOverview extends Vue {
     starred: false,
   };
   private auth = feathersClient.get('auth');
+  private removeDialog = {
+    show: false,
+    id: '',
+  };
 
   async mounted (): Promise<void> {
+    await this.loadLists();
+  }
+
+  async removeItem (id: string): Promise<void> {
+    feathersClient.service('lists').remove(id);
     await this.loadLists();
   }
 
@@ -129,37 +163,40 @@ export default class ListOverview extends Vue {
   }
 
   async loadLists (): Promise<void> {
+    this.lists = [];
+
     const lists: IList[] = await feathersClient.service('lists').find();
     await lists.map(async (list) => {
       this.lists.push({
-        owner: `Owned by: '${await this.getOwnerName(list.owner)}'`,
+        owner: await this.getOwnerName(list.owner),
         name: list.name,
-        starred: list.starred,
+        pinned: list.pinned,
         id: list.list_id,
       });
     });
   }
 
   async getOwnerName (uuid: string): Promise<string> {
-    if (uuid === this.auth.user.uuid) return 'You';
+    if (uuid === this.auth.user.uuid) return '';
     return feathersClient.service('user').get(uuid);
   }
 
   async createList (): Promise<void> {
     if (!this.newList.name) return;
-    console.log('dsasd', this.newList.starred);
-    await feathersClient.service('lists').create({ name: this.newList.name, starred: this.newList.starred } as IList);
-
+    await feathersClient.service('lists').create({
+      name: this.newList.name,
+      pinned: this.newList.pinned || false,
+    } as IList);
     await this.loadLists();
   }
 
-  async starList (id: string, star: boolean): Promise<void> {
+  async pinList (id: string, pin: boolean): Promise<void> {
     const list = this.lists.find((item) => item.id === id);
     if (!list) return;
 
-    await feathersClient.service('lists').update(id, { starred: star });
+    await feathersClient.service('lists').update(id, { pinned: pin });
 
-    this.snack(list.starred ? `Added '${list.name}' to starred lists.` : `Removed '${list.name}' from starred lists.`);
+    this.snack(list.pinned ? `Added '${list.name}' to pinned lists.` : `Removed '${list.name}' from pinned lists.`);
   }
 
   snack (message: string): void {

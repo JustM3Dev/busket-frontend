@@ -23,7 +23,7 @@ export async function isLoggedIn (): Promise<boolean> {
 export interface IList {
   owner: string,
   name: string;
-  starred: boolean;
+  pinned: boolean;
   items: Record<string, string>;
   // eslint-disable-next-line camelcase
   list_id: string;
@@ -35,6 +35,7 @@ export interface IList {
 }
 
 export interface Item {
+  checked: boolean,
   cachedName: string,
   name: string,
   id: string

@@ -21,47 +21,58 @@
       <v-spacer></v-spacer>
     </v-alert>
 
-    <v-text-field outlined label="Add" persistent-placeholder placeholder="Test" dense class="mt-3 mx-1"
-                  append-icon="mdi-plus" @click:append="createItem" v-model="newItem.name" @keypress.enter="createItem"></v-text-field>
+    <v-btn outlined block color="primary" @click="loadItems()" class="mt-3">
+      <v-icon>mdi-reload</v-icon>
+      Reload
+    </v-btn>
 
-    <div v-if="items && items.length > 0" class="mt-3">
-      <draggable v-model="items" ghost-class="ghost" @end="updateItems">
-        <transition-group>
-          <v-card v-for="(item, i) in items" :key="i" flat outlined class="px-2 mb-2">
-            <v-row>
-              <v-col
-                cols="auto"
-                class="mr-auto"
-                align-self="center"
-              >
-                <div class="d-flex justify-start">
-                  <SneakInput v-model="item.name" style="width: 60%" @keypress.enter="item.cachedName = item.name; updateItems();" />
-                  <div style="width: 60px">
-                    <v-btn outlined small color="primary" @click="item.cachedName = item.name; updateItems();"
-                           :hidden="item.name === item.cachedName">
-                      Save
-                    </v-btn>
+    <v-text-field outlined label="Add" persistent-placeholder placeholder="Test" dense class="mt-3"
+                  append-icon="mdi-plus" @click:append="createItem" v-model="newItem.name"
+                  @keypress.enter="createItem"></v-text-field>
+
+    <div v-if="items && items.length > 0">
+      <div v-for="(filter, i) in [ true, false ]" :key="i">
+        <div class="grey--text" :class="filter ? '' : 'mt-6'" :draggable="false">{{ filter ? 'To do' : 'Done' }}</div>
+        <v-divider class="mb-2"></v-divider>
+        <draggable v-model="items" ghost-class="ghost" @end="updateItems">
+          <transition-group>
+            <v-card v-for="(item, i) in items.filter(t => t.checked === !filter)" :key="i" flat outlined
+                    class="px-2 mb-2">
+              <v-row>
+                <v-col
+                  cols="auto"
+                  class="mr-auto"
+                  align-self="center"
+                >
+                  <div class="d-flex justify-start">
+                    {{ item.name }} ({{ item.checked }})
+                    <!--                  <SneakInput v-model="item.name" style="width: 60%" @keypress.enter="item.cachedName = item.name; updateItems();" />-->
+                    <div style="width: 60px">
+                      <v-btn outlined small color="primary" @click="item.cachedName = item.name; updateItems();"
+                             :hidden="item.name === item.cachedName">
+                        Save
+                      </v-btn>
+                    </div>
                   </div>
-                </div>
-              </v-col>
-              <v-col cols="auto">
-                <v-btn color="red lighten-1" icon @click="trashClick($event, i)">
-                  <v-icon>mdi-trash-can-outline</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-card>
-        </transition-group>
-      </draggable>
+                </v-col>
+                <v-col cols="auto" align-self="center">
+                  <v-layout row wrap align-center>
+                    <v-btn color="red lighten-1" class="ma-auto" icon @click="trashClick($event, i)">
+                      <v-icon>mdi-trash-can-outline</v-icon>
+                    </v-btn>
+                    <v-checkbox class="px-1 pt-1" @click="checkItem(item.id)"
+                                :input-value="item.checked"></v-checkbox>
+                  </v-layout>
+                </v-col>
+              </v-row>
+            </v-card>
+          </transition-group>
+        </draggable>
+      </div>
     </div>
     <div v-else class="grey--text text-center my-3">
       No data to display.
     </div>
-
-    <v-btn outlined block color="primary" @click="loadItems()">
-      <v-icon>mdi-reload</v-icon>
-      Reload
-    </v-btn>
 
     <v-btn
       class="mx-2"
@@ -163,7 +174,7 @@ export default class ListDetail extends Vue {
   private list: IList = {
     owner: '',
     name: '',
-    starred: false,
+    pinned: false,
     list_id: '',
     items: {},
     created_at: new Date(),
@@ -173,6 +184,7 @@ export default class ListDetail extends Vue {
   private dialog = false;
   private newItem = {
     name: '',
+    checked: false,
   };
   private notInLibrary = false;
   private removeDialog = {
@@ -185,6 +197,12 @@ export default class ListDetail extends Vue {
     this.notInLibrary = !await this.isInLibrary();
   }
 
+  async checkItem (id: string): Promise<void> {
+    const item = this.items.filter((t) => t.id === id)[0];
+    item.checked = !item.checked;
+    await this.updateItems();
+  }
+
   async isInLibrary (): Promise<boolean> {
     const rel = await feathersClient.service('relations').get({});
     console.log(rel);
@@ -195,8 +213,7 @@ export default class ListDetail extends Vue {
     return inLib;
   }
 
-  trashClick (e: any, i: number): void {
-    console.log(e.shiftKey);
+  trashClick (e: { shiftKey: boolean }, i: number): void {
     if (e.shiftKey) {
       this.removeItem(i);
       return;
@@ -217,6 +234,7 @@ export default class ListDetail extends Vue {
     if (!this.list.items) (this.list.items as unknown as Record<string, unknown>) = { data: [] };
     (this.list.items.data as unknown as ListItem[]).forEach((item) => {
       this.items.push({
+        checked: item.checked,
         cachedName: item.name,
         name: item.name,
         id: item.id,
@@ -232,6 +250,7 @@ export default class ListDetail extends Vue {
 
     if (!this.items) this.items = [];
     this.items.push({
+      checked: false,
       cachedName: this.newItem.name.trim(),
       name: this.newItem.name.trim(),
       id: uuidv4(),
@@ -244,6 +263,7 @@ export default class ListDetail extends Vue {
     const items = [];
     this.items.forEach((item) => {
       items.push({
+        checked: item.checked,
         name: item.name,
         id: item.id,
       });
@@ -259,9 +279,10 @@ export default class ListDetail extends Vue {
 </script>
 
 <style scoped>
+/*noinspection ALL*/
 .ghost {
   width: 100%;
-  height: 38px;
+  height: 46px;
   background: rgba(24, 131, 234, 0.2);
   opacity: 80%;
   border: rgba(24, 131, 234, 1) dashed 2px;

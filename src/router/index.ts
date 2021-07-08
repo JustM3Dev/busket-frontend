@@ -19,22 +19,10 @@ const routes: Array<RouteConfig> = [
     component: () => import('@/views/Auth/Signup.vue'),
   },
   {
-    path: '/auth/logout',
-    name: 'logout',
-    meta: { requiresAuth: false },
-    component: () => import('@/views/Auth/Logout.vue'),
-  },
-  {
     path: '/auth/login',
     name: 'login',
     meta: { requiresAuth: false },
     component: () => import('@/views/Auth/Login.vue'),
-  },
-  {
-    path: '/auth/reset',
-    name: 'reset password',
-    meta: { requiresAuth: false },
-    component: () => import('@/views/Auth/ResetLogin.vue'),
   },
   {
     path: '/me/overview',
