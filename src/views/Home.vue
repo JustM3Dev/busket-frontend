@@ -1,10 +1,13 @@
 <template>
   <div class="text-center mt-2">
     <div v-if="auth !== null">
-      <h1>{{ $t('Welcome to Busket, user!', { user: auth.user.username }) }}</h1>
+      <h1>{{ $t('Welcome to Busket, user!', {user: auth.user.username}) }}</h1>
       <div class="grey--text mb-4">{{ $t('What do you wanna do today?') }}</div>
       <v-sheet width="25rem" rounded="lg" outlined class="ma-auto pa-2">
-        <v-btn color="primary" block text @click="$router.push({ name: 'list overview' })">{{ $t('View my lists') }}</v-btn>
+        <v-btn color="primary" block text @click="$router.push({ name: 'list overview' })">{{
+            $t('View my lists')
+          }}
+        </v-btn>
 
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
@@ -14,6 +17,7 @@
             <v-list-item
               v-for="(lang, i) in langs"
               :key="i"
+              ripple
             >
               <v-list-item-title @click="setLang(lang.short)">{{ lang.name }} ({{
                   lang.short
@@ -49,7 +53,10 @@ export default class Home extends Vue {
   }, {
     short: 'de',
     name: 'Deutsch',
-  }]
+  }, {
+    short: 'test',
+    name: 'test',
+  }];
 
   async logOut (): Promise<void> {
     await feathersClient.logout();

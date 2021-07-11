@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-text-field
-      label="Username"
+      :label="$t('auth.Username')"
       :rules="usernameRules"
       hide-details="auto"
       class="pb-3"
@@ -9,7 +9,7 @@
       v-model="username"
     ></v-text-field>
     <v-text-field
-      label="Email"
+      :label="$t('auth.Email')"
       :rules="emailRules"
       hide-details="auto"
       class="pb-3"
@@ -18,7 +18,7 @@
     ></v-text-field>
     <v-text-field
       ref="passwordField"
-      label="Password"
+      :label="$t('auth.Password')"
       hide-details="auto"
       :rules="passwordRules"
       :append-icon="!showPsw ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"

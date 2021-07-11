@@ -166,11 +166,7 @@ export default class ListOverview extends Vue {
   }
 
   copyToClipboard (content: string): void {
-    if (window.clipboardData && window.clipboardData.setData) {
-      // For IE
-      // eslint-disable-next-line no-undef
-      clipboardData.setData('Text', text);
-    } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+    if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
       const t = document.createElement('textarea');
       t.textContent = content;
       // For Edge
@@ -222,7 +218,7 @@ export default class ListOverview extends Vue {
 
     await feathersClient.service('lists').update(id, { pinned: pin });
 
-    this.snack(list.pinned ? this.$t('list.Added name to pinned', { name: list.name }) : this.$t('list.Removed name from pinned', { name: list.name }));
+    this.snack(list.pinned ? this.$t('list.Added name to pinned', { name: list.name }).toString() : this.$t('list.Removed name from pinned', { name: list.name }).toString());
   }
 
   snack (message: string): void {

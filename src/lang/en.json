@@ -10,9 +10,9 @@
   "Close": "Close",
   "Create": "Create",
   "Cancel": "Cancel",
+  "Delete": "Delete",
   "No data to display": "No data to display.",
   "Something went wrong": "Something went wrong",
-  "No data ":  "",
   "navbar": {
     "Home": "Home",
     "My lists": "My lists",
@@ -60,6 +60,7 @@
     "New list placeholder": "Cool shopping list",
     "Add to lib": "Add to library?",
     "Add it": "Add it",
+    "New entry": "New entry",
     "Refresh": "Refresh",
     "Ham": "Ham",
     "To do": "To do",

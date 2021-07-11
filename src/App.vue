@@ -82,7 +82,7 @@ export default class App extends Vue {
     // Beta only
     if (config.isBeta) {
       this.showSnack({
-        message: this.$t('special.Beta Notice'),
+        message: this.$t('special.Beta Notice').toString(),
         duration: 1200,
       });
     }

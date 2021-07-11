@@ -29,7 +29,7 @@
       {{ $t('list.Refresh') }}
     </v-btn>
 
-    <v-text-field outlined label="Add" persistent-placeholder :placeholder="$t('list.Ham')" dense class="mt-3"
+    <v-text-field outlined :label="$t('list.New entry')" persistent-placeholder :placeholder="$t('list.Ham')" dense class="mt-3"
                   append-icon="mdi-plus" @click:append="createItem" v-model="newItem.name"
                   @keypress.enter="createItem"></v-text-field>
 
@@ -66,8 +66,7 @@
                     <v-btn color="red lighten-1" class="ma-auto" icon @click="trashClick($event, i)">
                       <v-icon>mdi-trash-can-outline</v-icon>
                     </v-btn>
-                    <v-checkbox class="px-1 pt-1" @click="checkItem(item.id)"
-                                :input-value="item.checked"></v-checkbox>
+                    <v-checkbox class="px-1 pt-1" v-model="item.checked"></v-checkbox>
                   </v-layout>
                 </v-col>
               </v-row>
