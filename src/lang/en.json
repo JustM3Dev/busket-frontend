@@ -47,7 +47,10 @@
     "The requested page could not be found": "The requested page could not be found.",
     "Back home": "Back home",
     "Beta Notice": "You are currently testing a beta - Please report any bugs!",
-    "Copied link": "Copied link to clipboard!"
+    "Copied link": "Copied link to clipboard!",
+    "This browser is not supported nor recommended": "This browser is not supported nor recommended.",
+    "Connected": "Connected",
+    "Disconnected from server": "Disconnected from server. Trying to reconnect..."
   },
   "list": {
     "Are you sure": "Are you sure",

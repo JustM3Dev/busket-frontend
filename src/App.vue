@@ -21,6 +21,35 @@
         </v-row>
       </v-main>
 
+      <v-dialog
+        v-model="disconnectDialog"
+        width="350"
+      >
+        <v-card>
+          <v-card-title class="text-h5">
+            Connection issues
+          </v-card-title>
+
+          <v-card-text>
+            You seem to have some connection issues. Check your internet connection and try reloading the website. If
+            this continues to happen you can contact me at <a href="mailto:busket@bux.at">busket@bux.at</a>.
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              text
+              @click="disconnectDialog = false"
+            >
+              {{ $t('Close') }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-snackbar
         ref="snack"
         v-model="snack.show"
@@ -67,9 +96,27 @@ export default class App extends Vue {
   // noinspection JSUnusedGlobalSymbols
   feathersClient = feathersClient;
   private snack: Snack = { message: '' };
+  private disconnectDialog = false;
 
   mounted (): void {
     EventBus.$on('snackbar', this.showSnack);
+
+    // Register disconnect and connect
+    let conCount = 0;
+    feathersClient.io.on('connect', () => {
+      if (conCount === 0) return;
+      console.log('Connection established!');
+      this.showSnack({ message: this.$t('special.Connected').toString(), duration: 800 });
+      conCount++;
+    });
+
+    // Handle disconnects
+    let disCount = 0;
+    feathersClient.io.on('disconnect', () => {
+      if (disCount >= 3) this.disconnectDialog = true;
+      this.showSnack({ message: this.$t('special.Disconnected from server').toString(), duration: 900 });
+      disCount++;
+    });
 
     // Set language
     const locale = window.localStorage.getItem('preferredLocale');
@@ -90,7 +137,7 @@ export default class App extends Vue {
     // IE only
     if (isIE) {
       this.showSnack({
-        message: 'This browser is not supported nor recommended!',
+        message: this.$t('special.This browser is not supported nor recommended').toString(),
         duration: 1200,
       });
     }

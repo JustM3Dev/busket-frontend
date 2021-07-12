@@ -17,6 +17,7 @@
   "Delete": "test",
   "No data to display": "test",
   "Something went wrong": "test",
+  "This browser is not supported nor recommended": "test",
   "navbar": {
     "Home": "test",
     "My lists": "test",
@@ -51,7 +52,10 @@
     "The requested page could not be found": "test",
     "Back home": "test",
     "Beta Notice": "test",
-    "Copied link": "test"
+    "Copied link": "test",
+    "This browser is not supported nor recommended": "test",
+    "Connected": "test",
+    "Disconnected from server": "test"
   },
   "list": {
     "Are you sure": "test",

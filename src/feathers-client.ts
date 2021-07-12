@@ -6,10 +6,10 @@ import config from '../config';
 
 const socket = io(config.backend, { transports: ['websocket'] });
 
-const feathersClient = feathers()
-  .configure(socketio(socket, { timeout: 30000 }))
-  .configure(auth());
+const feathersClient = feathers();
 
+feathersClient.configure(socketio(socket, { timeout: 30000 }));
+feathersClient.configure(auth());
 feathersClient.authentication.app.set('auth', null);
 
 export async function isLoggedIn (): Promise<boolean> {

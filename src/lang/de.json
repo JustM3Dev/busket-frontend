@@ -47,7 +47,10 @@
     "The requested page could not be found": "Seltsam... - Die Angefragte Seite konnte nicht gefunden werden",
     "Back home": "Zurück nach Hause",
     "Beta Notice": "Du testest gerade eine Beta. Bitte melde bugs.",
-    "Copied link": "Der Link ist nun in deiner Zwischenablage."
+    "Copied link": "Der Link ist nun in deiner Zwischenablage.",
+    "This browser is not supported nor recommended": "Dieser Browser wird nicht mehr unterstützt sowohl auch nicht mehr empfohlen.",
+    "Connected": "Verbindung hergestellt.",
+    "Disconnected from server": "Verbindung unterbrochen. Erneutes verbinden..."
   },
   "list": {
     "Are you sure": "Bist du dir sicher",

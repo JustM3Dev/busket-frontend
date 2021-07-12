@@ -42,7 +42,7 @@
         <v-divider class="mb-2"></v-divider>
         <draggable v-model="items" ghost-class="ghost" @end="updateItems">
           <transition-group>
-            <v-card v-for="(item, i) in items.filter(t => t.checked === !filter)" :key="i" flat outlined
+            <v-card v-for="(item, i) in items.filter(t => t.checked === !filter)" :key="item.id" flat outlined
                     class="px-2 mb-2">
               <v-row>
                 <v-col
