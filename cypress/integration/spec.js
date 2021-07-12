@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-describe('My first test', () => {
+describe('Basic test', () => {
   it('Log in', () => {
     cy.visit('http://192.168.4.48:8080');
 
