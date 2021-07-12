@@ -51,8 +51,7 @@
                   align-self="center"
                 >
                   <div class="d-flex justify-start">
-                    {{ item.name }} ({{ item.checked }})
-                    <!--                  <SneakInput v-model="item.name" style="width: 60%" @keypress.enter="item.cachedName = item.name; updateItems();" />-->
+                    {{ item.name }}
                     <div style="width: 60px">
                       <v-btn outlined small color="primary" @click="item.cachedName = item.name; updateItems();"
                              :hidden="item.name === item.cachedName">
