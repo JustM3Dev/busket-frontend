@@ -5,7 +5,7 @@ interface Config {
 
 const config: Config = {
   backend: 'http://192.168.4.48:3030',
-  isBeta: true,
+  isBeta: false,
 };
 
 export default config;

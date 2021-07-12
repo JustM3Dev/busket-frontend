@@ -50,7 +50,9 @@
     "Copied link": "Copied link to clipboard!",
     "This browser is not supported nor recommended": "This browser is not supported nor recommended.",
     "Connected": "Connected",
-    "Disconnected from server": "Disconnected from server. Trying to reconnect..."
+    "Disconnected from server": "Disconnected from server. Trying to reconnect...",
+    "Connection issues": "Connection issues",
+    "Connection notice": "You seem to have some connection issues. Check your internet connection and try reloading the website. If this continues to happen you can contact me at"
   },
   "list": {
     "Are you sure": "Are you sure",

@@ -21,6 +21,18 @@
       </v-slide-y-transition>
       <v-spacer v-if="!showIcons"></v-spacer>
 
+      <v-fade-transition>
+        <div v-show="!feathersClient.io.connected" class="mr-3">
+          <div class="fake-btn">(Offline)</div>
+        </div>
+      </v-fade-transition>
+
+      <v-fade-transition>
+        <div v-show="isBeta" class="mr-3">
+          <div class="fake-btn">(Beta)</div>
+        </div>
+      </v-fade-transition>
+
       <div v-if="!showIcons">
         <v-btn text outlined class="mr-3" target="_blank" href="https://github.com/JustM3Dev/busket-frontend/issues/new"
                v-if="isBeta">
@@ -109,7 +121,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import FastAuth from '@/components/Auth/FastAuth.vue';
-import { isLoggedIn } from '@/feathers-client';
+import feathersClient, { isLoggedIn } from '@/feathers-client';
 import Responsive from '@/components/Responsive.vue';
 import { isMobileOnly } from 'mobile-device-detect';
 import config from '../../config';
@@ -124,6 +136,7 @@ export default class Navbar extends Vue {
   private drawer = false;
   private group = null;
   private showIcons = false;
+  private feathersClient = feathersClient;
 
   async mounted (): Promise<void> {
     window.addEventListener('resize', this.resizeEvent);
@@ -155,3 +168,15 @@ export default class Navbar extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.fake-btn {
+  font-weight: 500;
+  letter-spacing: 0.0892857143em;
+  text-indent: 0.0892857143em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 45%;
+  user-select: none;
+}
+</style>

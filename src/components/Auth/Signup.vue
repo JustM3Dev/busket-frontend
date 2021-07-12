@@ -24,6 +24,7 @@
       :append-icon="!showPsw ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
       :type="showPsw ? 'text' : 'password'"
       @click:append="showPsw = !showPsw"
+      @keypress.enter="submit"
       v-model="password"
     ></v-text-field>
     <span ref="passwordHint" class="pt-1"></span>

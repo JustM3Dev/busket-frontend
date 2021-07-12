@@ -50,7 +50,9 @@
     "Copied link": "Der Link ist nun in deiner Zwischenablage.",
     "This browser is not supported nor recommended": "Dieser Browser wird nicht mehr unterstützt sowohl auch nicht mehr empfohlen.",
     "Connected": "Verbindung hergestellt.",
-    "Disconnected from server": "Verbindung unterbrochen. Erneutes verbinden..."
+    "Disconnected from server": "Verbindung unterbrochen. Erneutes verbinden...",
+    "Connection issues": "Verbindungsprobleme",
+    "Connection notice": "Es scheint so als hättest du Verbindungsprobleme. Prüfe deine Internetverbindung und versuche die Seite neu zu laden. Falls dies weiterhin passiert kontaktiere mich unter"
   },
   "list": {
     "Are you sure": "Bist du dir sicher",

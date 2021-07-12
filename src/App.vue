@@ -27,12 +27,11 @@
       >
         <v-card>
           <v-card-title class="text-h5">
-            Connection issues
+            {{ $t('special.Connection issues') }}
           </v-card-title>
 
           <v-card-text>
-            You seem to have some connection issues. Check your internet connection and try reloading the website. If
-            this continues to happen you can contact me at <a href="mailto:busket@bux.at">busket@bux.at</a>.
+            {{ $t('special.Connection notice') }} <a href="mailto:busket@bux.at">busket@bux.at</a>.
           </v-card-text>
 
           <v-divider></v-divider>

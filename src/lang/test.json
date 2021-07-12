@@ -55,7 +55,9 @@
     "Copied link": "test",
     "This browser is not supported nor recommended": "test",
     "Connected": "test",
-    "Disconnected from server": "test"
+    "Disconnected from server": "test",
+    "Connection issues": "test",
+    "Connection notice": "test"
   },
   "list": {
     "Are you sure": "test",
