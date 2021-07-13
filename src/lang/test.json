@@ -22,7 +22,8 @@
     "Home": "test",
     "My lists": "test",
     "Account": "test",
-    "Report a bug": "test"
+    "Report a bug": "test",
+    "Dark mode": "test"
   },
   "auth": {
     "The fastest way to auth on Busket": "test",

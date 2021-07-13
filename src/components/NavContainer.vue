@@ -102,6 +102,13 @@
             <v-list-item-title>{{ $t('navbar.Account') }}</v-list-item-title>
           </v-list-item>
 
+          <v-list-item @click="changeTheme">
+            <v-list-item-icon>
+              <v-icon>{{ $vuetify.theme.dark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('navbar.Dark mode') }}</v-list-item-title>
+          </v-list-item>
+
           <v-list-item target="_blank" href="https://github.com/JustM3Dev/busket-frontend/issues/new">
             <v-list-item-icon>
               <v-icon>mdi-bug</v-icon>
