@@ -8,7 +8,7 @@
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-app-bar-title>
         <v-btn @click="$route.name !== 'home' ? $router.push({ name: 'home' }) : ''" color="primary">
-          <v-icon class="mr-2" small>mdi-cart-outline</v-icon>
+          <v-icon large>$vuetify.icons.logo</v-icon>
           Busket
         </v-btn>
       </v-app-bar-title>
@@ -70,7 +70,7 @@
         >
           <v-list-item disabled dense>
             <v-list-item-icon>
-              <v-icon>mdi-cart-outline</v-icon>
+              <v-icon>$vuetify.icons.logo</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Busket</v-list-item-title>
           </v-list-item>
