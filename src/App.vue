@@ -68,6 +68,30 @@
           </v-btn>
         </template>
       </v-snackbar>
+
+      <!--   Update notice   -->
+      <v-dialog
+        v-model="showUpdateNotice"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <v-card>
+          <v-toolbar
+            color="primary"
+            dark
+          >
+            <v-btn
+              icon
+              @click="showUpdateNotice = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{ $t('update.Title') }}</v-toolbar-title>
+          </v-toolbar>
+          <Changelog></Changelog>
+        </v-card>
+      </v-dialog>
     </NavContainer>
   </v-app>
 </template>
@@ -78,6 +102,7 @@ import NavContainer from '@/components/NavContainer.vue';
 import EventBus from '@/eventbus';
 import { isIE } from 'mobile-device-detect';
 import feathersClient from '@/feathers-client';
+import Changelog from '@/components/Changelog.vue';
 import config from '../config';
 
 interface Snack {
@@ -89,6 +114,7 @@ interface Snack {
 @Component({
   components: {
     NavContainer,
+    Changelog,
   },
 })
 export default class App extends Vue {
@@ -96,9 +122,31 @@ export default class App extends Vue {
   feathersClient = feathersClient;
   private snack: Snack = { message: '' };
   private disconnectDialog = false;
+  private showUpdateNotice = false;
 
-  mounted (): void {
+  async mounted (): Promise<void> {
     EventBus.$on('snackbar', this.showSnack);
+
+    // Update notice
+    const v = window.localStorage.getItem('version') || '';
+    if (v !== config.version) {
+      // window.localStorage.setItem('version', config.version);
+      this.showUpdateNotice = true;
+    }
+
+    // Dark mode
+    let dark = window.localStorage.getItem('dark')?.includes('true');
+    if (!dark) {
+      window.localStorage.setItem('dark', 'false');
+      dark = false;
+    }
+
+    this.$vuetify.theme.dark = dark;
+
+    // PWA promotion
+    window.addEventListener('appinstalled', () => {
+      this.showSnack({ message: 'Thanks for installing Busket!' });
+    });
 
     // Register disconnect and connect
     let conCount = 0;

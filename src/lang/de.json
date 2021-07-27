@@ -45,6 +45,7 @@
     "Create a new Busket account Already have one? Click": "Erstelle einen neuen Busket Konto. Du hast schon einen? Klicke"
   },
   "special": {
+    "Name must not be empty": "Name kann nicht leer sein",
     "The requested page could not be found": "Seltsam... - Die Angefragte Seite konnte nicht gefunden werden",
     "Back home": "Zurück nach Hause",
     "Beta Notice": "Du testest gerade eine Beta. Bitte melde bugs.",
@@ -72,5 +73,8 @@
     "To do": "To do",
     "Done": "Fertig",
     "Save": "Speichern"
+  },
+  "update": {
+    "Title": "Changelog"
   }
 }

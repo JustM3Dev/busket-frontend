@@ -37,7 +37,7 @@
     "Must be an email": "Must be an email! (eg. example@example.com)",
     "Only Characters from A-z, 0-9, spaces and dots are allowed": "Only Characters from A-z, 0-9, spaces and dots are allowed",
     "Wrong email or password!": "Wrong email or password!",
-    "Something went wrong... Please try again later": "Something went wrong... Please try again later",
+    "Something went wrong Please try again later": "Something went wrong... Please try again later",
     "Created account email successfully": "Created account {email} successfully.",
     "An account with the email email already exists": "An account with the email {email} already exists.",
     "Login using your Busket account You can create one": "Login using your Busket account. You can create one",
@@ -45,6 +45,7 @@
     "Create a new Busket account Already have one? Click": "Create a new Busket account. Already have one? Click"
   },
   "special": {
+    "Name must not be empty": "Name mustn't be empty",
     "The requested page could not be found": "The requested page could not be found.",
     "Back home": "Back home",
     "Beta Notice": "You are currently testing a beta - Please report any bugs!",
@@ -72,5 +73,8 @@
     "To do": "To do",
     "Done": "Done",
     "Save": "Save"
+  },
+  "update": {
+    "Title": "Changelog"
   }
 }

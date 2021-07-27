@@ -43,8 +43,11 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import feathersClient from '@/feathers-client';
+import Logo from '@/components/Icons/Logo.vue';
 
-@Component
+@Component({
+  components: { Logo },
+})
 export default class Home extends Vue {
   private auth = feathersClient.authentication.app.get('auth');
   private langs: { short: string, name: string }[] = [{

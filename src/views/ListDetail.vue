@@ -24,14 +24,36 @@
       <v-spacer></v-spacer>
     </v-alert>
 
+    <v-dialog v-model="notInLibrary" persistent max-width="500px">
+      <v-card>
+        <v-card-title>We are sorry</v-card-title>
+        <v-card-text>
+          Shared lists are currently not supported due to some major bugs with them. They will be supported in the future.
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" rounded outlined class="mb-2" width="100%" to="/me/overview">Go back</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-btn outlined block color="primary" @click="loadItems()" class="mt-3">
       <v-icon>mdi-reload</v-icon>
       {{ $t('list.Refresh') }}
     </v-btn>
 
-    <v-text-field outlined :label="$t('list.New entry')" persistent-placeholder :placeholder="$t('list.Ham')" dense class="mt-3"
-                  append-icon="mdi-plus" @click:append="createItem" v-model="newItem.name"
-                  @keypress.enter="createItem"></v-text-field>
+    <v-text-field outlined
+                  :label="$t('list.New entry')"
+                  persistent-placeholder
+                  :placeholder="$t('list.Ham')"
+                  dense
+                  class="mt-3"
+                  append-icon="mdi-plus"
+                  @click:append="createItem"
+                  v-model="newItem.name"
+                  @keypress.enter="createItem"
+                  ref="addListItemInput"
+                  @focus="$refs.addListItemInput.validate()"
+    ></v-text-field>
 
     <div v-if="items && items.length > 0">
       <div v-for="(filter, i) in [ true, false ]" :key="i">
@@ -40,10 +62,10 @@
           }}
         </div>
         <v-divider class="mb-2"></v-divider>
-        <draggable v-model="items" ghost-class="ghost" @end="updateItems">
+        <draggable v-model="items" ghost-class="ghost" @end="updateItems" :delayOnTouchOnly="30">
           <transition-group>
-            <v-card v-for="(item, i) in items.filter(t => t.checked === !filter)" :key="item.id" flat outlined
-                    class="px-2 mb-2">
+            <v-card flat outlined class="px-2 mb-2" v-for="(item, i) in items.filter(t => t.checked === !filter)"
+                    :key="item.id">
               <v-row>
                 <v-col
                   cols="auto"
@@ -53,7 +75,7 @@
                   <div class="d-flex justify-start">
                     {{ item.name }}
                     <div style="width: 60px">
-                      <v-btn outlined small color="primary" @click="item.cachedName = item.name; updateItems();"
+                      <v-btn outlined small color="primary" @click.stop="item.cachedName = item.name; updateItems();"
                              :hidden="item.name === item.cachedName">
                         {{ $t('list.Save') }}
                       </v-btn>
@@ -62,10 +84,10 @@
                 </v-col>
                 <v-col cols="auto" align-self="center">
                   <v-layout row wrap align-center>
-                    <v-btn color="red lighten-1" class="ma-auto" icon @click="trashClick($event, i)">
+                    <v-btn color="red lighten-1" class="ma-auto" icon @click.stop="trashClick($event, i)">
                       <v-icon>mdi-trash-can-outline</v-icon>
                     </v-btn>
-                    <v-checkbox class="px-1 pt-1" v-model="item.checked"></v-checkbox>
+                    <v-checkbox class="px-1 pt-1" v-model="item.checked" @click="updateItems"></v-checkbox>
                   </v-layout>
                 </v-col>
               </v-row>
@@ -112,11 +134,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import {
+  Component,
+  Prop,
+  Vue,
+} from 'vue-property-decorator';
 import feathersClient, { IList, Item as ListItem } from '@/feathers-client';
 import draggable from 'vuedraggable';
 import { v4 as uuidv4 } from 'uuid';
 import SneakInput from '@/components/SneakInput.vue';
+import EventBus from '@/eventbus';
 
 @Component({
   components: {
@@ -143,18 +170,12 @@ export default class ListDetail extends Vue {
   private notInLibrary = false;
   private removeDialog = {
     show: false,
-    index: -1,
+    id: '',
   };
 
   async mounted (): Promise<void> {
     await this.loadItems();
     this.notInLibrary = !await this.isInLibrary();
-  }
-
-  async checkItem (id: string): Promise<void> {
-    const item = this.items.filter((t) => t.id === id)[0];
-    item.checked = !item.checked;
-    await this.updateItems();
   }
 
   async isInLibrary (): Promise<boolean> {
@@ -167,13 +188,14 @@ export default class ListDetail extends Vue {
     return inLib;
   }
 
-  trashClick (e: { shiftKey: boolean }, i: number): void {
+  trashClick (e: { shiftKey: boolean }, id: string): void {
     if (e.shiftKey) {
-      this.removeItem(i);
+      this.removeItem(id);
       return;
     }
+
     this.removeDialog.show = true;
-    this.removeDialog.index = i;
+    this.removeDialog.id = id;
   }
 
   async createRelation (): Promise<void> {
@@ -196,7 +218,11 @@ export default class ListDetail extends Vue {
     });
   }
 
-  async createItem (): Promise<void> {
+  async createItem (e: Event): Promise<void> {
+    if (this.newItem.name.trim() === '') {
+      EventBus.$emit('snackbar', { message: this.$t('special.Name must not be empty') });
+      e.preventDefault();
+    }
     await feathersClient.service('listitem').create({
       list_id: this.listId,
       name: this.newItem.name.trim(),
@@ -225,9 +251,10 @@ export default class ListDetail extends Vue {
     await feathersClient.service('lists').update(this.listId, { items: { data: this.items } });
   }
 
-  async removeItem (index: number): Promise<void> {
-    this.items.splice(index, 1);
-    await feathersClient.service('listitem').remove({ index, list_id: this.listId });
+  async removeItem (id: string): Promise<void> {
+    this.items.splice(this.items.indexOf(this.items.filter((val) => val.id === id)[0]), 1);
+    await this.updateItems();
+    // await feathersClient.service('listitem').remove({ id, list_id: this.listId });
   }
 }
 </script>

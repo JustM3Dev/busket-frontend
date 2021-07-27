@@ -5,8 +5,8 @@ interface Config {
 }
 
 const config: Config = {
-  backend: 'https://busket.bux.at',
-  isBeta: false,
+  backend: 'http://192.168.4.48:3030',
+  isBeta: true,
   version: '1.0',
 };
 
