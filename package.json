@@ -4,20 +4,21 @@
   "private": true,
   "scripts": {
     "production:serve": "serve dist",
-    "prod": "vue-cli-service serve --mode production",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "rd /s /q \"dist\" && vue-cli-service build",
     "lint": "vue-cli-service lint",
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/lang/**/*.json\"",
     "e2e": "cypress open"
   },
   "dependencies": {
+    "@cypress/webpack-preprocessor": "^5.9.1",
     "@feathersjs/authentication-client": "^4.5.11",
     "@feathersjs/feathers": "^4.5.11",
     "@feathersjs/socketio-client": "^4.5.11",
     "core-js": "^3.6.5",
     "cypress": "^7.7.0",
     "mobile-device-detect": "^0.4.3",
+    "raw-loader": "^4.0.2",
     "register-service-worker": "^1.7.1",
     "socket.io": "^4.1.2",
     "socket.io-client": "^2.4.0",
@@ -28,12 +29,11 @@
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.2.0",
     "vuedraggable": "^2.24.3",
-    "vuetify": "^2.4.0",
-    "@cypress/webpack-preprocessor": "^5.9.1"
+    "vuetify": "^2.4.0"
   },
   "devDependencies": {
     "@types/uuid": "^8.3.1",
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",

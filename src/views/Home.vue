@@ -1,6 +1,5 @@
 <template>
   <div class="text-center mt-2">
-    <v-icon x-large>$vuetify.icons.logo</v-icon>
     <div v-if="auth !== null">
       <h1>{{ $t('Welcome to Busket, user!', {user: auth.user.username}) }}</h1>
       <div class="grey--text mb-4">{{ $t('What do you wanna do today?') }}</div>

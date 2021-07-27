@@ -50,6 +50,7 @@
     "Create a new Busket account Already have one? Click": "test"
   },
   "special": {
+    "Name must not be empty": "test",
     "The requested page could not be found": "test",
     "Back home": "test",
     "Beta Notice": "test",
@@ -77,5 +78,8 @@
     "To do": "test",
     "Done": "test",
     "Save": "test"
+  },
+  "update": {
+    "Title": "test"
   }
 }

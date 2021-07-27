@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 import feathersClient from '@/feathers-client';
+import EventBus from '@/eventbus';
 import Home from '../views/Home.vue';
 
 Vue.use(VueRouter);
@@ -56,11 +57,22 @@ router.beforeEach(async (to, from, next) => {
 
   // Authentication
   if (!feathersClient.authentication.authenticated) {
+    setTimeout(() => {
+      if (feathersClient.io.connected) return;
+      if (to.meta?.requiresAuth) return;
+      EventBus.$emit('snackbar', { message: 'Can\'t connect to server. Client may be slow...' });
+    }, 800);
+
     await feathersClient.authenticate().then((user) => {
       feathersClient.authentication.app.set('auth', user);
     }).catch((err) => {
       console.log(`[Auth] Not authenticated. This page requires auth: ${to.meta?.requiresAuth ? 'yes' : 'no'}`);
-      if (!err.data?.reason && to.meta?.requiresAuth) router.replace({ name: 'login', query: { redirect: to.path } });
+      if (!err.data?.reason && to.meta?.requiresAuth) {
+        router.replace({
+          name: 'login',
+          query: { redirect: to.path },
+        });
+      }
     });
   }
   next();
